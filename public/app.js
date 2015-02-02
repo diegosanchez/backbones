@@ -5,12 +5,11 @@ MyApp.addRegions({
 	mainRegion:"#content"
 });
 
-MyApp.addInitializer( function (options) {
-	var view = new AngryCatView({
-		collection: options.cats
-	});
-
-	MyApp.mainRegion.show( view );
+MyApp.addInitializer(function(options){
+  var angryCatsView = new AngryCatsView({
+    collection: options.cats
+  });
+  MyApp.mainRegion.show(angryCatsView);
 });
 
 
@@ -28,7 +27,7 @@ AngryCatView = Backbone.Marionette.ItemView.extend({
 	className: 'angry_cat'
 });
 
-AngryCatViews = Backbone.Marionette.CompositeView.extend({
+AngryCatsView = Backbone.Marionette.CompositeView.extend({
 	tagName: 'table',
 	id: 'angry_cats',
 	className: 'table-striped table-bordered',
@@ -36,6 +35,7 @@ AngryCatViews = Backbone.Marionette.CompositeView.extend({
 	itemView: AngryCatView,
 
 	appendHtml: function (collectionView, itemView) {
+		console.log('AngryCatViews');
 		collectionView.$('tbody').append(itemView.el);
 	}
 });
