@@ -6,17 +6,42 @@
 
     <link href="./assets/css/bootstrap.css" rel="stylesheet">
     <link href="./assets/css/custom.css" rel="stylesheet">
-  </head>
-  <body>
-    <div id="content">
-    </div>
-
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"></script>
     <script src="./assets/javascripts/vendor/underscore.js"></script>
     <script src="./assets/javascripts/vendor/backbone.js"></script>
     <script src="./assets/javascripts/vendor/backbone.marionette.js"></script>
     <script type="text/javascript" src="app.js"></script>
+
+    <script type="text/javascript">
+      $(document).ready(function(){
+        var cats = new AngryCats([
+          new AngryCat({ name: 'Wet Cat' }),
+          new AngryCat({ name: 'Bitey Cat' }),
+          new AngryCat({ name: 'Surprised Cat' })
+        ]);
+       
+        MyApp.start({cats: cats});
+      });
+    </script>
+  </head>
+  <body>
+    <div id="content">
+    </div>
+
+    <script type="text/template" id="angry_cats-template">
+      <thead>
+        <tr class='header'>
+          <th>Name</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </script>
+
+    <script type="text/template" id="angry_cat-template">
+      <td><%= name %></td>
+    </script>
 
   </body>
 </html>
