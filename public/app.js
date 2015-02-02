@@ -14,9 +14,20 @@ MyApp.addInitializer(function(options){
 
 
 // Models
-AngryCat = Backbone.Model.extend({});
+AngryCat = Backbone.Model.extend({
+	defaults: {
+		rank: 0
+	}
+});
 AngryCats = Backbone.Collection.extend({
-	model: AngryCat
+	model: AngryCat,
+	initialize: function (cats) {
+		var rank = 1;
+		_.each( cats, function (cat) {
+			cat.set('rank', rank);
+			++rank;
+		});
+	}
 });
 
 
@@ -35,7 +46,6 @@ AngryCatsView = Backbone.Marionette.CompositeView.extend({
 	itemView: AngryCatView,
 
 	appendHtml: function (collectionView, itemView) {
-		console.log('AngryCatViews');
 		collectionView.$('tbody').append(itemView.el);
 	}
 });
