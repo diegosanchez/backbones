@@ -15,18 +15,79 @@ MyApp.addInitializer(function(options){
 
 // Models
 AngryCat = Backbone.Model.extend({
-	defaults: {
-		rank: 0
-	}
+	rankUp: function() {
+	  this.set({rank: this.get('rank') - 1});
+	},
+	
+	rankDown: function() {
+	  this.set({rank: this.get('rank') + 1});
+	}	
 });
+
 AngryCats = Backbone.Collection.extend({
 	model: AngryCat,
+	comparator: function (cat) {
+		return cat.get('rank');
+	},
 	initialize: function (cats) {
 		var rank = 1;
 		_.each( cats, function (cat) {
 			cat.set('rank', rank);
 			++rank;
 		});
+
+		var self = this;
+
+		MyApp.on('rank:up', function (cat) {
+
+			console.clear();
+			console.log('rank up triggered');
+			console.log('arguments:', arguments[0].attributes);
+
+			if (cat.get('rank') === 1) {
+			  // can't increase rank of top-ranked cat
+			  return true;
+			}
+			self.rankUp(cat);
+			self.sort();
+			self.trigger('reset');
+
+		});
+
+		MyApp.on('rank:down', function (cat) {
+			console.clear();
+			console.log('rank down triggered');
+			console.log('arguments:', arguments[0].attributes);
+
+			if (cat.get('rank') === self.size()) {
+		      // can't decrease rank of lowest ranked cat
+		      return true;
+		    }
+		    self.rankDown(cat);
+		    self.sort();
+		    self.trigger('reset');
+		});
+	},
+	rankUp: function(cat) {
+		// find the cat we're going to swap ranks with
+		var rankToSwap = cat.get('rank') - 1;
+		var otherCat = this.at(rankToSwap - 1);
+
+		// swap ranks
+		cat.rankUp();
+		otherCat.rankDown();
+	},
+	 
+	rankDown: function(cat) {
+		// find the cat we're going to swap ranks with
+		var rankToSwap = cat.get('rank') + 1;
+		var otherCat = this.at(rankToSwap - 1);
+
+		console.log(cat.attributes);
+		console.log(otherCat.attributes);
+		// swap ranks
+		cat.rankDown();
+		otherCat.rankUp();
 	}
 });
 
@@ -42,13 +103,15 @@ AngryCatView = Backbone.Marionette.ItemView.extend({
 	},
 
 	rankUp: function () {
-		console.clear();
-		console.log('rank up triggered');
+
+		MyApp.trigger('rank:up', this.model);
 	},
 
 	rankDown: function () {
 		console.clear();
 		console.log('rank down triggered');
+		console.log('arguments:', arguments);
+		MyApp.trigger('rank:down', this.model);
 	}
 });
 
